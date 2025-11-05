@@ -1,0 +1,1 @@
+rootProject.name = "jb-dependency-git-repo"

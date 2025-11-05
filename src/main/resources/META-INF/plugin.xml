@@ -1,0 +1,63 @@
+    <!-- Plugin Configuration File: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN, cannot be changed between the plugin versions. -->
+    <id>dev.sandipchitale.jb-dependency-git-repo</id>
+
+    <!-- Public plugin name should be written in Title Case.
+        Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
+    <name>Dependency Git Repository</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor
+            email="sandipchitale@gmail.com"
+            url="https://github.com/sandipchitale">Sandip Chitale
+    </vendor>
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+        Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
+    <description><![CDATA[
+       Open Git repository at version based on dependency path.
+    ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <dependencies>
+        <plugin id="com.intellij.modules.platform"/>
+
+    </dependencies>
+
+    <change-notes><![CDATA[
+        <h2>New Features</h2>
+        <ul>
+            <li>Show Git Repository info for dependency.</li>
+        </ul>
+        <h2>Features</h2>
+        <ul>
+            <li>Show Git Repository info for dependency.</li>
+        </ul>
+        <h2>Known Bugs</h2>
+        <ul>
+            <li>None.</li>
+        </ul>
+        <h2>Bug Fixes</h2>
+        <ul>
+            <li>None yet.</li>
+        </ul>
+        ]]>
+    </change-notes>
+
+    <!-- Extensions defined by the plugin.
+        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+
+    </extensions>
+
+    <actions>
+        <action id="dev.sandipchitale.jbdependencygitrepo.OpenDependencyGitRepoAction"
+                class="dev.sandipchitale.jbdependencygitrepo.OpenDependencyGitRepoAction"
+                text="Dependency Git Repository"
+                icon="AllIcons.FileTypes.Gitignore"
+                description="Open Git repository at version">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>
