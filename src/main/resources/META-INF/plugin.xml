@@ -26,13 +26,17 @@
     </dependencies>
 
     <change-notes><![CDATA[
-        <h2>New Features</h2>
-        <ul>
-            <li>Show Git Repository info for dependency.</li>
-        </ul>
         <h2>Features</h2>
         <ul>
-            <li>Show Git Repository info for dependency.</li>
+            <li>Show Git Repository info for dependency.
+                <p>Given a path like this:</p>
+                <pre>/home/sandipchitale/.gradle/caches/modules-2/files-2.1/com.fasterxml/classmate/1.7.0/e98374da1f2143ac8e6e0a95036994bb19137a3/classmate-1.7.0.jar!/com/fasterxml/classmate/GenericType.class</pre>
+                <p>The <b>Open Repository</b> context menu action on a dependency will make a best effort to open this URL in the browser:</p>
+                <a href="https://github.com/FasterXML/java-classmate/blob/classmate-1.7.0/src/main/java/com/fasterxml/classmate/GenericType.java">GenericType.java</a>
+                <p><b>Note that the correct tag in the URL.</b></p>
+                <p>If the heuristics fails it just shows some useful information in a dialog.</p>
+            </li>
+
         </ul>
         <h2>Known Bugs</h2>
         <ul>
