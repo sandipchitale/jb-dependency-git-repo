@@ -22,7 +22,7 @@
         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <dependencies>
         <plugin id="com.intellij.modules.platform"/>
-
+        <plugin id="com.intellij.gradle"/>
     </dependencies>
 
     <change-notes><![CDATA[
@@ -54,10 +54,11 @@
     <actions>
         <action id="dev.sandipchitale.jbdependencygitrepo.OpenDependencyGitRepoAction"
                 class="dev.sandipchitale.jbdependencygitrepo.OpenDependencyGitRepoAction"
-                text="Dependency Git Repository"
+                text="Open Repository"
                 icon="AllIcons.FileTypes.Gitignore"
                 description="Open Git repository at version">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="ExternalSystem.DependencyAnalyzer.DependencyListGroup" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>

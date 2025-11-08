@@ -15,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,8 +31,20 @@ public class OpenDependencyGitRepoAction extends AnAction {
             Navigatable navigatable = navigatables[0];
             if (navigatable instanceof BasePsiNode basePsiNode) {
                 VirtualFile virtualFile = basePsiNode.getVirtualFile();
-                ArtifactInfo artifactInfo = parsePath(Objects.requireNonNull(virtualFile).getPath());
-                new DependencyInfoDialog(project, artifactInfo.GAV() + "\n\n" + artifactInfo.javaPath()).show();
+
+
+                String path = Objects.requireNonNull(virtualFile).getPath();
+                String resolveSourceUrl = "";
+                try {
+                    resolveSourceUrl = MavenSourceUrlResolver.resolveSourceUrl(path);
+                    Desktop.getDesktop().browse(URI.create(resolveSourceUrl));
+                } catch (Exception ioe) {
+                    ArtifactInfo artifactInfo = parsePath(path);
+                    new DependencyInfoDialog(project, "Path: " + path
+                            + "\n\nGAV: " + artifactInfo.GAV()
+                            + "\n\nSource: " + artifactInfo.javaPath()
+                    ).show();
+                }
             }
         }
     }
@@ -166,7 +180,7 @@ public class OpenDependencyGitRepoAction extends AnAction {
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
             JBScrollPane scrollPane = new JBScrollPane(textArea);
-            scrollPane.setPreferredSize(new Dimension(700, 150));
+            scrollPane.setPreferredSize(new Dimension(900, 350));
             return scrollPane;
         }
 
