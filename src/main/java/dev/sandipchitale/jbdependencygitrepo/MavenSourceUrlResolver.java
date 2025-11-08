@@ -31,7 +31,10 @@ public class MavenSourceUrlResolver {
 
         ParsedPath p = parseGradleJarClassPath(gradleJarClassPath);
         if (p == null) {
-            throw new IllegalArgumentException("Unrecognized Gradle cache path format: " + gradleJarClassPath);
+            p = parseMavenJarClassPath(gradleJarClassPath);
+        }
+        if (p == null) {
+            throw new IllegalArgumentException("Unrecognized Gradle/Maven cache path format: " + gradleJarClassPath);
         }
 
         // Fetch POM and parse SCM
@@ -281,6 +284,40 @@ public class MavenSourceUrlResolver {
             } else {
                 groupSegs.add(maybeArtifact);
                 i++;
+            }
+        }
+        return null;
+    }
+
+    private static ParsedPath parseMavenJarClassPath(String path) {
+        // Expect something like:  .../.m2/repository/{groupId path}/{artifactId}/{version}/{artifactId}-{version}(-classifier).jar!/{entry}
+        int bang = path.indexOf('!');
+        if (bang < 0) return null;
+        String jarPath = path.substring(0, bang);
+        String classEntry = path.substring(bang + 1);
+        String norm = jarPath.replace('\\', '/');
+        String[] parts = norm.split("/");
+
+        // Find marker "repository"
+        int idx = -1;
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].equals("repository")) { idx = i; break; }
+        }
+        if (idx < 0 || idx + 4 >= parts.length) return null;
+
+        // Scan for pattern: .../{artifactId}/{version}/{artifactId}-{version}*.jar
+        for (int i = idx + 1; i + 2 < parts.length; i++) {
+            String maybeArtifact = parts[i];
+            String maybeVersion = parts[i + 1];
+            String jarFile = parts[i + 2];
+            if (looksLikeVersion(maybeVersion)
+                    && jarFile.endsWith(".jar")
+                    && jarFile.startsWith(maybeArtifact + "-" + maybeVersion)) {
+                // group segments are between repository and artifactId
+                List<String> groupSegs = new ArrayList<>();
+                for (int g = idx + 1; g < i; g++) groupSegs.add(parts[g]);
+                String groupId = String.join(".", groupSegs);
+                return new ParsedPath(groupId, maybeArtifact, maybeVersion, classEntry.startsWith("/") ? classEntry.substring(1) : classEntry);
             }
         }
         return null;
