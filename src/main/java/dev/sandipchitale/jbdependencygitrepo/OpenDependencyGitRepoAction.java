@@ -10,6 +10,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
 import com.intellij.ui.components.JBScrollPane;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,14 +26,32 @@ public class OpenDependencyGitRepoAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent actionEvent) {
         Project project = actionEvent.getProject();
+
+        VirtualFile virtualFile = actionEvent.getData(CommonDataKeys.VIRTUAL_FILE);
+        if (virtualFile != null) {
+            @NonNls @NotNull String virtualFilePath = virtualFile.getPath();
+            if (virtualFilePath.contains(System.getProperty("user.home") + "/.gradle/") || virtualFilePath.contains(System.getProperty("user.home") + "/.m2/")) {
+                String resolveSourceUrl = "";
+                try {
+                    resolveSourceUrl = MavenSourceUrlResolver.resolveSourceUrl(virtualFilePath);
+                    Desktop.getDesktop().browse(URI.create(resolveSourceUrl));
+                } catch (Exception ioe) {
+                    ArtifactInfo artifactInfo = parsePath(virtualFilePath);
+                    new DependencyInfoDialog(project, "Path: " + virtualFilePath
+                            + "\n\nGAV: " + artifactInfo.GAV()
+                            + "\n\nSource: " + artifactInfo.javaPath()
+                    ).show();
+                }
+                return;
+            }
+        }
+
         final Navigatable[] navigatables = actionEvent.getData(CommonDataKeys.NAVIGATABLE_ARRAY);
         if (navigatables != null && navigatables.length > 0) {
             Navigatable navigatable = navigatables[0];
             if (navigatable instanceof BasePsiNode basePsiNode) {
-                VirtualFile virtualFile = basePsiNode.getVirtualFile();
-
-
-                String path = Objects.requireNonNull(virtualFile).getPath();
+                VirtualFile navigatableVirtualFile = basePsiNode.getVirtualFile();
+                String path = Objects.requireNonNull(navigatableVirtualFile).getPath();
                 String resolveSourceUrl = "";
                 try {
                     resolveSourceUrl = MavenSourceUrlResolver.resolveSourceUrl(path);
@@ -51,6 +70,14 @@ public class OpenDependencyGitRepoAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent actionEvent) {
         boolean isEnabled = false;
+        VirtualFile virtualFile = actionEvent.getData(CommonDataKeys.VIRTUAL_FILE);
+        if (virtualFile != null) {
+            @NonNls @NotNull String virtualFilePath = virtualFile.getPath();
+            if (virtualFilePath.contains(System.getProperty("user.home") + "/.gradle/") || virtualFilePath.contains(System.getProperty("user.home") + "/.m2/")) {
+                actionEvent.getPresentation().setEnabledAndVisible(true);
+                return;
+            }
+        }
         final Navigatable[] navigatables = actionEvent.getData(CommonDataKeys.NAVIGATABLE_ARRAY);
         if (navigatables != null && navigatables.length > 0) {
             Navigatable navigatable = navigatables[0];

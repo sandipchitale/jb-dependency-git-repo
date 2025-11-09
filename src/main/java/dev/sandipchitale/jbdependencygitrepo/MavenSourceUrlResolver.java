@@ -51,7 +51,9 @@ public class MavenSourceUrlResolver {
         // Determine whether the entry is a compiled class or a generic file/folder
         String entryRelPath = p.classEntry.startsWith("/") ? p.classEntry.substring(1) : p.classEntry;
         boolean isClass = entryRelPath.endsWith(".class");
-        String targetRelPath = isClass ? toJavaSourceRelPath(entryRelPath) : entryRelPath; // do not convert if not .class
+        boolean isJava = entryRelPath.endsWith(".java");
+        boolean isSourceLike = isClass || isJava;
+        String targetRelPath = isClass ? toJavaSourceRelPath(entryRelPath) : entryRelPath; // keep .java as-is
 
         // Try host-specific resolution using APIs (GitHub)
         GitHubRepo gh = parseGitHubRepo(repoWeb);
@@ -64,7 +66,7 @@ public class MavenSourceUrlResolver {
             }
             if (!isBlank(ref)) {
                 // Find actual path of the entry within the repo for this ref (handles modules/non-standard roots)
-                GitHubPathResult pathResult = githubFindPath(gh, ref, targetRelPath, p.artifactId, isClass);
+                GitHubPathResult pathResult = githubFindPath(gh, ref, targetRelPath, p.artifactId, isSourceLike);
                 if (pathResult != null && !isBlank(pathResult.path)) {
                     String kind = ("dir".equals(pathResult.type)) ? "tree" : "blob";
                     return String.format("https://github.com/%s/%s/%s/%s/%s", gh.owner, gh.repo, kind, ref, pathResult.path);
@@ -94,10 +96,10 @@ public class MavenSourceUrlResolver {
         }
 
         String[] roots;
-        if (isClass) {
+        if (isSourceLike) {
             roots = moduleGuess == null
-                    ? new String[] { p.artifactId + "/src/main/java", "src/main/java" }
-                    : new String[] { p.artifactId + "/src/main/java", moduleGuess + "/src/main/java", "src/main/java" };
+                    ? new String[] { p.artifactId + "/src/main/java", "src/main/java", p.artifactId + "/src/main/kotlin", "src/main/kotlin" }
+                    : new String[] { p.artifactId + "/src/main/java", moduleGuess + "/src/main/java", "src/main/java", p.artifactId + "/src/main/kotlin", moduleGuess + "/src/main/kotlin", "src/main/kotlin" };
         } else {
             roots = moduleGuess == null
                     ? new String[] { p.artifactId + "/src/main/resources", "src/main/resources", p.artifactId, "" }

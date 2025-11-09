@@ -64,7 +64,7 @@
                 icon="AllIcons.FileTypes.Gitignore"
                 description="Open Git repository at version">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-            <add-to-group group-id="ExternalSystem.DependencyAnalyzer.DependencyListGroup" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>
