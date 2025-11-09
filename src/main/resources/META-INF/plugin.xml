@@ -5,7 +5,7 @@
 
     <!-- Public plugin name should be written in Title Case.
         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
-    <name>Dependency Git Repository</name>
+    <name>Dependency Repository</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor
@@ -28,7 +28,8 @@
     <change-notes><![CDATA[
         <h2>Features</h2>
         <ul>
-            <li>Show Git Repository info for dependency.
+            <li>Show Repository info for dependency.
+
                 <p>Given a path to a .class file in Gradle dependency .jar file like this:</p>
                 <pre>~/.gradle/caches/modules-2/files-2.1/com.fasterxml/classmate/1.7.0/e98374da1f2143ac8e6e0a95036994bb19137a3/classmate-1.7.0.jar!/com/fasterxml/classmate/GenericType.class</pre>
                 <p>The <b>Open Repository</b> context menu action on a dependency will make a best effort to open this URL in the browser:</p>
