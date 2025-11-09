@@ -22,7 +22,6 @@
         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <dependencies>
         <plugin id="com.intellij.modules.platform"/>
-        <plugin id="com.intellij.gradle"/>
     </dependencies>
 
     <change-notes><![CDATA[

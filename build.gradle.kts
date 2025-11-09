@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.sandipchitale"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
@@ -21,9 +21,6 @@ dependencies {
             useInstaller = false
         }
         testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
-
-        bundledPlugin("com.intellij.gradle")
-        bundledPlugin("org.jetbrains.plugins.gradle")
     }
 }
 
